@@ -180,8 +180,31 @@ naiveBayes <- setRefClass("naiveBayes",
                       tidy_text <- unnest_tokens(train, 'splitted', 'Message', token="words") %>%
              filter(!splitted %in% splitted_stop_words)
                       tidy_text <- tidy_text %>% count(splitted, sort=TRUE, Category) %>% pivot_wider(names_from = Category, values_from = n)
-                      print(tidy_text)
-                    },
+                     
+                    
+                      all_words = 0
+                      tidy_text[is.na(tidy_text)] <- 0
+                      tidy_text[, 2] <- tidy_text[, 2] + 1
+                      tidy_text[, 3] <- tidy_text[, 3] + 1
+                      
+                      spam = sum(tidy_text$spam)
+                      ham = sum(tidy_text$ham)
+
+                      tidy_text['spam_prob'] = tidy_text['spam']/spam
+                      tidy_text['ham_prob'] = tidy_text['ham']/ham
+                      
+                      prob_spam = spam/(spam+ham)
+                      prob_ham = ham/(spam+ham)
+                      
+                      print(prob_ham)
+                      print(prob_spam)
+
+
+
+
+                      
+                      #print(tidy_text)
+                      },
 
                     # return prediction for a single message 
                     predict = function(message)
