@@ -150,10 +150,10 @@ test <-  read.csv(file = test_path, stringsAsFactors = FALSE)
 
 ```{r}
 # note the power functional features of R bring us! 
-# tidy_text <- unnest_tokens(train, 'splitted', 'Message', token="words") %>%
+#tidy_text <- unnest_tokens(train, 'splitted', 'Message', token="words") %>%
 #             filter(!splitted %in% splitted_stop_words)
 
-# tidy_text %>% count(splitted,sort=TRUE)
+#tidy_text %>% count(splitted,sort=TRUE)
 ```
 
 ### Data visualization
@@ -179,13 +179,14 @@ naiveBayes <- setRefClass("naiveBayes",
                     {
                       tidy_text <- unnest_tokens(train, 'splitted', 'Message', token="words") %>%
              filter(!splitted %in% splitted_stop_words)
-                      tidy_text <- tidy_text %>% count(splitted, sort=TRUE, Category)
+                      tidy_text <- tidy_text %>% count(splitted, sort=TRUE, Category) %>% pivot_wider(names_from = Category, values_from = n)
+                      print(tidy_text)
                     },
-                    
+
                     # return prediction for a single message 
                     predict = function(message)
                     {
-                      #
+                      
                     },
                     
                     # score you test set so to get the understanding how well you model
