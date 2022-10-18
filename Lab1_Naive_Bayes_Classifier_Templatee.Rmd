@@ -196,20 +196,27 @@ naiveBayes <- setRefClass("naiveBayes",
                       prob_spam = spam/(spam+ham)
                       prob_ham = ham/(spam+ham)
                       
-                      print(prob_ham)
-                      print(prob_spam)
-
-
-
-
-                      
+                    
                       #print(tidy_text)
                       },
+                      
 
-                    # return prediction for a single message 
+                    # return prediction for a single message
+                   # parse = function()
+                    #{
+                      #tidy_test <- unnest_tokens(test, 'splitted', 'Message', token="words") %>%
+            # filter(!splitted %in% splitted_stop_words)
+                     
+                    
+                    #},
+                      
+                      
                     predict = function(message)
                     {
                       
+                      message <- strsplit(message, split = " ")
+                      message <- message[[1]]
+                      print(message)
                     },
                     
                     # score you test set so to get the understanding how well you model
@@ -219,12 +226,17 @@ naiveBayes <- setRefClass("naiveBayes",
                     # try how well your model generalizes to real world data! 
                     score = function(X_test, y_test)
                     {
-                         # TODO
+                         messages <- test[, 2]
+                        for(val in messages){
+                          model$predict(val)
+                        }
+                        
                     }
 ))
 
 model = naiveBayes()
 model$fit()
+model$score()
 ```
 
 ## Measure effectiveness of your classifier
