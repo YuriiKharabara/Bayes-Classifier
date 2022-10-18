@@ -179,7 +179,7 @@ naiveBayes <- setRefClass("naiveBayes",
                     {
                       tidy_text <- unnest_tokens(train, 'splitted', 'Message', token="words") %>%
              filter(!splitted %in% splitted_stop_words)
-                      tidy_text <- tidy_text %>% count(splitted, sort=TRUE, Category) %>% pivot_wider(names_from = Category, values_from = n)
+                      tidy_text <- tidy_text %>% count(tolower(splitted), sort=TRUE, Category) %>% pivot_wider(names_from = Category, values_from = n)
                      
                     
                       all_words = 0
@@ -190,8 +190,9 @@ naiveBayes <- setRefClass("naiveBayes",
                       spam = sum(tidy_text$spam)
                       ham = sum(tidy_text$ham)
 
-                      tidy_text['spam_prob'] = tidy_text['spam']/spam
                       tidy_text['ham_prob'] = tidy_text['ham']/ham
+                      tidy_text['spam_prob'] = tidy_text['spam']/spam
+                      
                       
                       prob_spam = spam/(spam+ham)
                       prob_ham = ham/(spam+ham)
@@ -216,7 +217,16 @@ naiveBayes <- setRefClass("naiveBayes",
                       
                       message <- strsplit(message, split = " ")
                       message <- message[[1]]
-                      print(message)
+                      for (val in message){
+                        #idx <- which(tidy_text$splitted == val)
+                        print(val)
+                        #idx <- tidy_text$ham_prob[match(val, tidy_text$splitted)]
+                        #print(idx)
+                        #prob <- tidy_text[idx, 4]
+                        #print(prob)
+                      }
+                        
+                                                    
                     },
                     
                     # score you test set so to get the understanding how well you model
@@ -226,7 +236,7 @@ naiveBayes <- setRefClass("naiveBayes",
                     # try how well your model generalizes to real world data! 
                     score = function(X_test, y_test)
                     {
-                         messages <- test[, 2]
+                         messages <- test[1, 2]
                         for(val in messages){
                           model$predict(val)
                         }
