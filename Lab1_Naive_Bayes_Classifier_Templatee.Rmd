@@ -179,8 +179,8 @@ naiveBayes <- setRefClass("naiveBayes",
                     {
                       tidy_text <- unnest_tokens(train, 'splitted', 'Message', token="words") %>%
              filter(!splitted %in% splitted_stop_words)
-                      tidy_text <- tidy_text %>% count(tolower(splitted), sort=TRUE, Category) %>% pivot_wider(names_from = Category, values_from = n)
-                     
+                      tidy_text <- tidy_text %>% count(splitted, sort=TRUE, Category) %>% pivot_wider(names_from = Category, values_from = n)
+                     print(tidy_text)
                     
                       all_words = 0
                       tidy_text[is.na(tidy_text)] <- 0
@@ -197,19 +197,9 @@ naiveBayes <- setRefClass("naiveBayes",
                       prob_spam = spam/(spam+ham)
                       prob_ham = ham/(spam+ham)
                       
-                    
-                      #print(tidy_text)
+                      return(tidy_text)
                       },
-                      
-
-                    # return prediction for a single message
-                   # parse = function()
-                    #{
-                      #tidy_test <- unnest_tokens(test, 'splitted', 'Message', token="words") %>%
-            # filter(!splitted %in% splitted_stop_words)
-                     
                     
-                    #},
                       
                       
                     predict = function(message)
@@ -217,14 +207,42 @@ naiveBayes <- setRefClass("naiveBayes",
                       
                       message <- strsplit(message, split = " ")
                       message <- message[[1]]
+                      text = model$fit(1, 2)
+                      spam_num = sum(text$spam)
+                      ham_num = sum(text$ham)
+                     
+
+                      
                       for (val in message){
+                        
+                      final_spam_prob =  spam_num/( spam_num + ham_num)
+                      final_ham_prob =  ham_num/( spam_num + ham_num)
                         #idx <- which(tidy_text$splitted == val)
-                        print(val)
-                        #idx <- tidy_text$ham_prob[match(val, tidy_text$splitted)]
-                        #print(idx)
+                        #print(val)
+                        #print(tidy_text)
+                  
+                        ham_prob <- text$ham_prob[match(val, text$splitted)]
+                        if (is.na(ham_prob)){
+                          ham_prob <- 1/ham_num
+                        }
+                       
+                        
+                        spam_prob <- text$spam_prob[match(val, text$splitted)]
+                        if (is.na(ham_prob)){
+                            spam_prob <- 1/spam_num
+                            
+                        }
+                         print(spam_prob)
+                        final_spam_prob = final_spam_prob*spam_prob
+                        final_ham_prob = final_ham_prob*ham_prob
+                        
+                        
+                        
                         #prob <- tidy_text[idx, 4]
                         #print(prob)
                       }
+                        #print(final_spam_prob)
+                        #print(final_ham_prob)
                         
                                                     
                     },
