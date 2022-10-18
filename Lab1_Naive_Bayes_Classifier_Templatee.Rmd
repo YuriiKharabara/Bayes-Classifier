@@ -210,13 +210,13 @@ naiveBayes <- setRefClass("naiveBayes",
                       text = model$fit(1, 2)
                       spam_num = sum(text$spam)
                       ham_num = sum(text$ham)
-                     
+                      final_spam_prob =  spam_num/( spam_num + ham_num)
+                      final_ham_prob =  ham_num/( spam_num + ham_num)
 
                       
                       for (val in message){
                         
-                      final_spam_prob =  spam_num/( spam_num + ham_num)
-                      final_ham_prob =  ham_num/( spam_num + ham_num)
+                 
                         #idx <- which(tidy_text$splitted == val)
                         #print(val)
                         #print(tidy_text)
@@ -226,23 +226,28 @@ naiveBayes <- setRefClass("naiveBayes",
                           ham_prob <- 1/ham_num
                         }
                        
-                        
+                        #print(ham_prob)
                         spam_prob <- text$spam_prob[match(val, text$splitted)]
-                        if (is.na(ham_prob)){
+                        if (is.na(spam_prob)){
                             spam_prob <- 1/spam_num
-                            
                         }
-                         print(spam_prob)
-                        final_spam_prob = final_spam_prob*spam_prob
-                        final_ham_prob = final_ham_prob*ham_prob
+                         #print(spam_prob)
+                        final_spam_prob <- final_spam_prob*spam_prob
+                        final_ham_prob <- final_ham_prob*ham_prob
                         
                         
                         
                         #prob <- tidy_text[idx, 4]
                         #print(prob)
                       }
-                        #print(final_spam_prob)
-                        #print(final_ham_prob)
+                      
+                      if(final_spam_prob>final_ham_prob){
+                        
+                        return("spam")
+                      }
+                      else{
+                        return("ham")
+                      }
                         
                                                     
                     },
@@ -254,11 +259,25 @@ naiveBayes <- setRefClass("naiveBayes",
                     # try how well your model generalizes to real world data! 
                     score = function(X_test, y_test)
                     {
-                         messages <- test[1, 2]
-                        for(val in messages){
-                          model$predict(val)
-                        }
-                        
+                      
+                         #messages <- test[, 2]
+                         
+                        # print(messages)
+                      my_range = 1:nrow(test)
+                      counter = 0
+                      all_tasks = 0
+                          for(i in my_range){
+                            result = (model$predict(test[i, 2]))
+                            #print(result)
+                           if (result != test[i,1]){
+                             counter = counter + 1
+                           }
+                            print(counter/all_tasks)
+                            all_tasks = all_tasks+1
+                             ## print("You are gay")
+                            #}
+                          }
+                        print(counter/all_tasks)
                     }
 ))
 
