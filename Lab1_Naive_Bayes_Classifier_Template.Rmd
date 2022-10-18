@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Lab Assignment 1: Naive Bayes Classifier
 
-### *Yurii Kharabara, Markiyan Kruhlii, Ivan Nikolaichenko*
+### *Yurii Kharabara, Ivan Nikolaychenko, Markiyan Kruhliy*
 
 ## Introduction
 
